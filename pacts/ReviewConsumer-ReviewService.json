@@ -4,37 +4,15 @@
   },
   "interactions": [
     {
-      "description": "a request for a non-existent review",
-      "providerStates": [
-        {
-          "name": "there are reviews"
-        }
-      ],
-      "request": {
-        "headers": {
-          "Accept": "application/json"
-        },
-        "method": "GET",
-        "path": "/reviews/xyz"
-      },
-      "response": {
-        "body": {},
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "status": 404
-      }
-    },
-    {
       "description": "a request for a review",
       "providerStates": [
         {
-          "name": "there are reviews"
+          "name": "a review with film ID 1 exists"
         }
       ],
       "request": {
         "headers": {
-          "Accept": "application/json"
+          "accept": "application/json"
         },
         "method": "GET",
         "path": "/reviews/1"
@@ -46,7 +24,7 @@
           "title": "Dracula"
         },
         "headers": {
-          "Content-Type": "application/json"
+          "content-type": "application/json"
         },
         "matchingRules": {
           "body": {
@@ -62,6 +40,28 @@
           "header": {}
         },
         "status": 200
+      }
+    },
+    {
+      "description": "a request for a review",
+      "providerStates": [
+        {
+          "name": "no reviews exist"
+        }
+      ],
+      "request": {
+        "headers": {
+          "accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/reviews/1"
+      },
+      "response": {
+        "body": {},
+        "headers": {
+          "content-type": "application/json"
+        },
+        "status": 404
       }
     }
   ],

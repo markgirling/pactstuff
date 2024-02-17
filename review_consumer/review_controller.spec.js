@@ -6,15 +6,11 @@ jest.mock("./review_service");
 
 class StubbedReviewService {
   async get(filmid) {
-    if (filmid === filmFixture.inputId) {
-      return filmFixture.outputReview;
+    if (filmid === 1) {
+      return filmFixture;
     }
 
-    if (filmid === emptyFilmFixture.inputId) {
-      return emptyFilmFixture.outputReview;
-    }
-
-    throw new Error("Invalid film ID used in StubbedReviewService");
+    return emptyFilmFixture;
   }
 }
 
@@ -22,12 +18,12 @@ const controller = new ReviewController(new StubbedReviewService());
 
 describe("ReviewController", () => {
   test("outputs film title and stars", async () => {
-    const result = await controller.displayReview(filmFixture.inputId);
+    const result = await controller.displayReview(1);
     expect(result).toEqual("Dracula: ***");
   });
 
   test("outputs not found message", async () => {
-    const result = await controller.displayReview(emptyFilmFixture.inputId);
+    const result = await controller.displayReview(2);
     expect(result).toEqual("Review not found!");
   });
 });

@@ -1,6 +1,8 @@
 const express = require("express");
+const ReviewsDatabase = require("./reviews_db");
 
 const app = express();
+const database = new ReviewsDatabase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -10,14 +12,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/reviews/:filmid", (req, res) => {
-  const id = req.params.filmid;
+  const data = database.get(parseInt(req.params.filmid));
 
-  if (id === "1") {
-    return res.json({ filmid: 1, title: "Dracula", rating: 3 });
-  }
-
-  if (id === "2") {
-    return res.json({ filmid: 2, title: "The Shining", rating: 4 });
+  if (data) {
+    return res.json(data);
   }
 
   return res.status(404).json({});

@@ -1,4 +1,1 @@
-module.exports = {
-  inputId: "xyz",
-  outputReview: {},
-};
+module.exports = {};

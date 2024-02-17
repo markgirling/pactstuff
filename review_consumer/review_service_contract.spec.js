@@ -9,52 +9,53 @@ const provider = new PactV3({
   dir: path.resolve(process.cwd(), "pacts"),
   consumer: "ReviewConsumer",
   provider: "ReviewService",
+  logLevel: "error",
 });
 
-const reviewBodyTemplate = MatchersV3.like(filmFixture.outputReview);
+const reviewBodyTemplate = MatchersV3.like(filmFixture);
 
-describe("review service contract tests", () => {
-  test("returns found status and review object for valid id", async () => {
+describe("get /reviews/id", () => {
+  test("returns found status and review object for existing film id", async () => {
     provider
-      .given("there are reviews")
+      .given("a review with film ID 1 exists")
       .uponReceiving("a request for a review")
       .withRequest({
         method: "GET",
         path: "/reviews/1",
-        headers: { Accept: "application/json" },
+        headers: { accept: "application/json" },
       })
       .willRespondWith({
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { "content-type": "application/json" },
         body: reviewBodyTemplate,
       });
 
     return provider.executeTest(async (mockserver) => {
       const service = new ReviewService(mockserver.url);
-      const response = await service.get(filmFixture.inputId);
-      expect(response).toStrictEqual(filmFixture.outputReview);
+      const response = await service.get(1);
+      expect(response).toStrictEqual(filmFixture);
     });
   });
 
-  test("returns not found status and empty object for invalid id", async () => {
+  test("returns not found status and empty object for nonexisting film id", async () => {
     provider
-      .given("there are reviews")
-      .uponReceiving("a request for a non-existent review")
+      .given("no reviews exist")
+      .uponReceiving("a request for a review")
       .withRequest({
         method: "GET",
-        path: "/reviews/xyz",
-        headers: { Accept: "application/json" },
+        path: "/reviews/1",
+        headers: { accept: "application/json" },
       })
       .willRespondWith({
         status: 404,
-        headers: { "Content-Type": "application/json" },
-        body: emptyFilmFixture.outputReview,
+        headers: { "content-type": "application/json" },
+        body: emptyFilmFixture,
       });
 
     return provider.executeTest(async (mockserver) => {
       const service = new ReviewService(mockserver.url);
-      const response = await service.get(emptyFilmFixture.inputId);
-      expect(response).toStrictEqual(emptyFilmFixture.outputReview);
+      const response = await service.get(1);
+      expect(response).toStrictEqual(emptyFilmFixture);
     });
   });
 });
